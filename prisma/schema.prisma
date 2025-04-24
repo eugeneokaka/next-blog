@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  firstname String
+  lastname  String
+  username  String    @unique
+  bio       String?
+  imageUrl  String? // URL of the user's profile image
+  email     String    @unique
+  password  String
+  posts     Post[] // One-to-many relation with posts
+  comments  Comment[] // One-to-many relation with comments
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Category {
+  id String @id @default(uuid())
+
+  name      String   @unique // Name of the category (e.g., "Technology")
+  posts     Post[] // One-to-many relation with posts
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id String @id @default(uuid())
+
+  title     String
+  slug      String   @unique
+  content   String
+  imageUrl  String? // URL of the post image
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  comments Comment[] // One-to-many relation with comments
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id])
+}
