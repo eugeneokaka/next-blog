@@ -9,48 +9,51 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
+  id        String    @id @default(uuid())
   firstname String
   lastname  String
   username  String    @unique
   bio       String?
-  imageUrl  String? // URL of the user's profile image
+  imageUrl  String?
   email     String    @unique
   password  String
-  posts     Post[] // One-to-many relation with posts
-  comments  Comment[] // One-to-many relation with comments
+  posts     Post[]
+  comments  Comment[]
+  likes     Like[] // 🆕 user can like many posts
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
 
 model Category {
-  id        String   @id @default(cuid())
-  name      String   @unique // Name of the category (e.g., "Technology")
-  posts     Post[] // One-to-many relation with posts
+  id        String   @id @default(uuid())
+  name      String   @unique
+  posts     Post[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Post {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   title     String
   slug      String   @unique
   content   String
-  imageUrl  String? // URL of the post image
+  imageUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  views  Int    @default(0) // 🆕 views counter
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
 
-  comments Comment[] // One-to-many relation with comments
+  comments Comment[]
+  likes    Like[] // 🆕 post can have many likes
 }
 
 model Comment {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   content   String
   createdAt DateTime @default(now())
 
@@ -59,4 +62,16 @@ model Comment {
 
   postId String
   post   Post   @relation(fields: [postId], references: [id])
+}
+
+model Like {
+  id        String   @id @default(uuid()) // 🆕 Like model
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId]) // a user can like a post only once
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+// Post and Category interfaces
 interface Post {
   id: string;
   title: string;
@@ -10,6 +11,9 @@ interface Post {
   imageUrl: string;
   category: {
     name: string;
+  };
+  user: {
+    username: string;
   };
 }
 
@@ -27,9 +31,30 @@ export default function Posts() {
   const [endDate, setEndDate] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
 
   const router = useRouter();
 
+  // Fetch current user username from token
+  // const fetchUsernameFromToken = async () => {
+  //   try {
+  //     const res = await fetch("/api/auth/me", {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`, // or from cookies/session
+  //       },
+  //     });
+  //     const data = await res.json();
+  //     setLoggedInUsername(data.username);
+  //   } catch (err) {
+  //     console.error("Failed to fetch username:", err);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchUsernameFromToken();
+  // }, []);
+
+  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -50,6 +75,7 @@ export default function Posts() {
     fetchCategories();
   }, []);
 
+  // Fetch posts
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
@@ -62,6 +88,7 @@ export default function Posts() {
 
         const res = await fetch(`/api/posts?${query.toString()}`);
         const data: Post[] = await res.json();
+
         setPosts(data);
       } catch {
         setError("Failed to fetch posts");
@@ -107,6 +134,7 @@ export default function Posts() {
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
           className="border border-gray-300 p-2 rounded"
+          placeholder="Start Date"
         />
 
         <input
@@ -114,6 +142,7 @@ export default function Posts() {
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
           className="border border-gray-300 p-2 rounded"
+          placeholder="End Date"
         />
       </div>
 
@@ -154,6 +183,15 @@ export default function Posts() {
                 >
                   Read more →
                 </a>
+                {/* Conditionally render Edit button */}
+                {loggedInUsername === post.user.username && (
+                  <a
+                    href={`/posts/edit/${post.id}`}
+                    className="ml-4 text-sm text-green-600 hover:underline font-semibold"
+                  >
+                    ✏️ Edit
+                  </a>
+                )}
               </div>
             </div>
           ))

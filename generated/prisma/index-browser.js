@@ -145,6 +145,7 @@ exports.Prisma.PostScalarFieldEnum = {
   imageUrl: 'imageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  views: 'views',
   userId: 'userId',
   categoryId: 'categoryId'
 };
@@ -155,6 +156,13 @@ exports.Prisma.CommentScalarFieldEnum = {
   createdAt: 'createdAt',
   userId: 'userId',
   postId: 'postId'
+};
+
+exports.Prisma.LikeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  postId: 'postId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -177,7 +185,8 @@ exports.Prisma.ModelName = {
   User: 'User',
   Category: 'Category',
   Post: 'Post',
-  Comment: 'Comment'
+  Comment: 'Comment',
+  Like: 'Like'
 };
 
 /**

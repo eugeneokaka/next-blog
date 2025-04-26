@@ -21,6 +21,7 @@ export default function Navbar() {
     const fetchUser = async () => {
       const res = await fetch("/api/me");
       const data = await res.json();
+      console.log("User data:", data); // Debugging line
 
       if (data.user) {
         setUser({
