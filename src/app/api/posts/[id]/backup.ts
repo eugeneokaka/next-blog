@@ -3,9 +3,9 @@ import { prisma } from "../../../../../utils/db"; // Adjust path to your prisma 
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const id = (await params).id;
+  const { id } = params;
 
   try {
     // First, increment the views
@@ -65,9 +65,8 @@ import { verifyToken } from "@/lib/auth";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const id = (await params).id;
   const authHeader = req.headers.get("authorization");
   // const token = authHeader?.split(" ")[1]; // Expect: "Bearer <token>"
   const token = req.cookies.get("token")?.value;
@@ -84,7 +83,7 @@ export async function PUT(
   }
 
   const post = await prisma.post.findUnique({
-    where: { id: id },
+    where: { id: params.id },
     select: { userId: true },
   });
 
@@ -103,7 +102,7 @@ export async function PUT(
 
   try {
     const updatedPost = await prisma.post.update({
-      where: { id: id },
+      where: { id: params.id },
       data: {
         title,
         content,
@@ -123,10 +122,10 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const id = (await params).id;
+    const { id } = params;
 
     console.log("Post ID:", id);
 

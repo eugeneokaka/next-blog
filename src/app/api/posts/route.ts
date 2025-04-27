@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     const post = await prisma.post.create({
       data: {
         title,
-        slug: title.toLowerCase().replace(/\s+/g, "-"),
+        slug: title.toLowerCase(),
         content,
         imageUrl,
         userId: user.id,

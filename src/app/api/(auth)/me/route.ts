@@ -1,6 +1,6 @@
 // src/app/api/auth/me/route.ts
 import { NextRequest, NextResponse } from "next/server";
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
 export async function GET(req: NextRequest) {

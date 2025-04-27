@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 interface Post {
   id: string;
   title: string;
+  views: number;
   content: string;
   imageUrl: string;
   category: {
@@ -177,6 +178,7 @@ export default function Posts() {
                 <p className="text-gray-700 text-sm">
                   {post.content.slice(0, 150)}...
                 </p>
+                <p className="text-gray-700 text-sm">{post.views} views</p>
                 <a
                   href={`/posts/${post.id}`}
                   className="mt-2 inline-block text-sm font-semibold text-blue-600 hover:underline"
